@@ -13,7 +13,32 @@ Hecho en **PHP + MySQL**, funciona con **XAMPP** sin instalar nada más.
 | **Historial** | Todos los servicios terminados, entregados o cancelados. Buscar por número de orden, cliente, cédula, placa/serie o trabajo realizado; filtrar por tipo, estado y rango de fechas. |
 | **Orden de servicio** | Hoja lista para **imprimir** (o guardar como PDF) con los datos del taller, cliente, vehículo, diagnóstico, todo lo que se le hizo, repuestos, mano de obra, total, garantía y espacio para firmas. |
 
-## Cómo instalarlo (XAMPP)
+## Cómo instalarlo con Docker (recomendado)
+
+Solo necesitas **Docker Desktop** (https://www.docker.com/products/docker-desktop/).
+
+1. Abre Docker Desktop y espera a que diga que está corriendo.
+2. Abre una terminal (PowerShell) **dentro de la carpeta `servicio-tecnico`**.
+3. Ejecuta:
+   ```
+   docker compose up -d
+   ```
+   La primera vez tarda unos minutos porque descarga las imágenes.
+4. Abre **http://localhost:8080**
+
+Extra: phpMyAdmin queda en **http://localhost:8081** para ver la base de datos.
+
+| Acción | Comando |
+|---|---|
+| Encender | `docker compose up -d` |
+| Apagar (los datos se conservan) | `docker compose down` |
+| Ver errores | `docker compose logs app` |
+| ⚠ Borrar TODO, incluidos los datos | `docker compose down -v` |
+
+Los datos se guardan en un volumen de Docker (`datos_mysql`), así que no se pierden al apagar
+o reiniciar el PC. Los contenedores se vuelven a encender solos cuando arranca Docker Desktop.
+
+## Cómo instalarlo con XAMPP (alternativa)
 
 1. Copia la carpeta `servicio-tecnico` dentro de `C:\xampp\htdocs\`.
 2. Abre el panel de XAMPP y enciende **Apache** y **MySQL**.
@@ -60,6 +85,8 @@ servicio-tecnico/
 ├── historial.php       Historial de servicios
 ├── orden.php           Orden imprimible
 ├── database.sql        Script SQL (opcional)
+├── Dockerfile          Imagen PHP + Apache
+├── docker-compose.yml  App + MariaDB + phpMyAdmin
 ├── includes/           Conexión, funciones, encabezado y pie
 └── assets/estilos.css  Estilos (incluye estilos de impresión)
 ```

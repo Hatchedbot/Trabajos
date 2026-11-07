@@ -1,0 +1,56 @@
+# Sistema de servicio técnico con Docker
+#   Iniciar:  docker compose up -d
+#   Abrir:    http://localhost:8080
+#   Detener:  docker compose down      (los datos NO se borran)
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      ST_DB_DRIVER: mysql
+      ST_DB_HOST: db
+      ST_DB_NOMBRE: servicio_tecnico
+      ST_DB_USUARIO: taller
+      ST_DB_CLAVE: taller123
+    volumes:
+      # Los cambios en el código se ven al recargar, sin reconstruir
+      - ./:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_ROOT_PASSWORD: root123
+      MARIADB_DATABASE: servicio_tecnico
+      MARIADB_USER: taller
+      MARIADB_PASSWORD: taller123
+      TZ: America/Bogota
+    volumes:
+      - datos_mysql:/var/lib/mysql      # Aquí se guardan los datos
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  # Opcional: phpMyAdmin para ver la base de datos en http://localhost:8081
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root123
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  datos_mysql:

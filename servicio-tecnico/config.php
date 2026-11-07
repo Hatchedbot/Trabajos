@@ -9,11 +9,12 @@ return [
     // La base de datos y las tablas se crean solas la primera vez.
     'db' => [
         'driver'      => getenv('ST_DB_DRIVER') ?: 'mysql',   // 'mysql' o 'sqlite'
-        'host'        => '127.0.0.1',
-        'port'        => 3306,
-        'nombre'      => 'servicio_tecnico',
-        'usuario'     => 'root',
-        'clave'       => '',
+        // (Con Docker estos valores llegan desde docker-compose.yml)
+        'host'        => getenv('ST_DB_HOST') ?: '127.0.0.1',
+        'port'        => (int) (getenv('ST_DB_PORT') ?: 3306),
+        'nombre'      => getenv('ST_DB_NOMBRE') ?: 'servicio_tecnico',
+        'usuario'     => getenv('ST_DB_USUARIO') ?: 'root',
+        'clave'       => getenv('ST_DB_CLAVE') !== false ? getenv('ST_DB_CLAVE') : '',
         // Solo se usa si driver = 'sqlite' (no necesita XAMPP/MySQL)
         'sqlite_file' => getenv('ST_SQLITE_FILE') ?: __DIR__ . '/datos/servicio_tecnico.sqlite',
     ],
